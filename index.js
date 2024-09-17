@@ -12,15 +12,20 @@ app.use(bodyParser.json());
 // API to fetch all seats
 app.get('/seats', async (req, res) => {
   try {
-    const seats = await prisma.seat.findMany();
+    // Fetch seats from the database and order by seat ID in ascending order
+    const seats = await prisma.seat.findMany({
+      orderBy: {
+        id: 'asc', // Ensure to replace 'id' with the actual field name used for ordering in your schema
+      },
+    });
     res.json(seats);
   } catch (error) {
-    res.status(402).json({
-      error : error
-    })
+    res.status(500).json({ // Changed to status 500 for general server errors
+      error: 'An error occurred while fetching seats.',
+    });
   }
-
 });
+
 
 // API to book seats
 app.post('/seats/book', async (req, res) => {  
